@@ -1,21 +1,23 @@
 const express = require("express");
 const router = express.Router();
-const wizardController = require("../controllers/albunsController.js");
-const upload = require("./../config/upload.js");
+const albumController = require("../controllers/albunsController.js");
+const upload = require("../config/upload.js");
+const apiKeyMiddleware = require("../config/apiKey.js");
+router.use(apiKeyMiddleware);
 
 /**
  * @swagger
  * tags:
- *   name: Wizards
- *   description: Gerenciamento de bruxos
+ *   name: Albuns
+ *   description: Gerenciamento de album
  */
 
 /**
  * @swagger
- * /api/wizards:
+ * /api/albuns:
  *   get:
- *     summary: Lista todos os bruxos
- *     tags: [Wizards]
+ *     summary: Lista todos os albuns
+ *     tags: [Albuns]
  *     parameters:
  *       - in: query
  *         name: name
@@ -24,16 +26,16 @@ const upload = require("./../config/upload.js");
  *         description: Filtro por nome
  *     responses:
  *       200:
- *         description: Lista de bruxos
+ *         description: Lista de albuns
  */
-router.get("/wizards", wizardController.getAllWizards);
+router.get("/albuns", albumController.getAllAlbuns);
 
 /**
  * @swagger
- * /api/wizards/{id}:
+ * /api/Albuns/{id}:
  *   get:
- *     summary: Busca bruxo por ID
- *     tags: [Wizards]
+ *     summary: Busca album por ID
+ *     tags: [Albuns]
  *     parameters:
  *       - in: path
  *         name: id
@@ -42,18 +44,18 @@ router.get("/wizards", wizardController.getAllWizards);
  *           type: integer
  *     responses:
  *       200:
- *         description: Bruxo encontrado
+ *         description: Album encontrado
  *       404:
- *         description: Bruxo não encontrado
+ *         description: Album não encontrado
  */
-router.get("/wizards/:id", wizardController.getWizard);
+router.get("/albuns/:id", albumController.getAlbum);
 
 /**
  * @swagger
- * /api/wizards:
+ * /api/albuns:
  *   post:
- *     summary: Cria um novo bruxo
- *     tags: [Wizards]
+ *     summary: Cria um novo album
+ *     tags: [Albuns]
  *     requestBody:
  *       required: true
  *       content:
@@ -63,23 +65,23 @@ router.get("/wizards/:id", wizardController.getWizard);
  *             properties:
  *               name:
  *                 type: string
- *               house_id:
+ *               artista_id:
  *                 type: integer
  *               photo:
  *                 type: string
  *                 format: binary
  *     responses:
  *       201:
- *         description: Bruxo criado
+ *         description: Album criado
  */
-router.post("/wizards", upload.single("photo"), wizardController.createWizard);
+router.post("/albuns", upload.single("photo"), albumController.createAlbum);
 
 /**
  * @swagger
- * /api/wizards/{id}:
+ * /api/albuns/{id}:
  *   delete:
- *     summary: Deleta um bruxo
- *     tags: [Wizards]
+ *     summary: Deleta um album
+ *     tags: [Albuns]
  *     parameters:
  *       - in: path
  *         name: id
@@ -88,16 +90,16 @@ router.post("/wizards", upload.single("photo"), wizardController.createWizard);
  *           type: integer
  *     responses:
  *       200:
- *         description: Bruxo deletado
+ *         description: Album deletado
  */
-router.delete("/wizards/:id", wizardController.deleteWizard);
+router.delete("/albuns/:id", albumController.deleteAlbum);
 
 /**
  * @swagger
- * /api/wizards/{id}:
+ * /api/albuns/{id}:
  *   put:
- *     summary: Atualiza um bruxo
- *     tags: [Wizards]
+ *     summary: Atualiza um album
+ *     tags: [Albuns]
  *     parameters:
  *       - in: path
  *         name: id
@@ -117,8 +119,8 @@ router.delete("/wizards/:id", wizardController.deleteWizard);
  *                 type: integer
  *     responses:
  *       200:
- *         description: Bruxo atualizado
+ *         description: Album atualizado
  */
-router.put("/wizards/:id", wizardController.updateWizard);
+router.put("/albuns/:id",albumController.updateAlbum);
 
 module.exports = router;

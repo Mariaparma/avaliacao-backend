@@ -1,59 +1,69 @@
 const albumModel = require("../models/albunsModel.js");
 
-const getAllalbuns = async (req, res) => {
+
+const getAllAlbuns = async (req, res) => {
+    const { name, country } = req.query;
     try {
-        const { name } = req.query;
-        const albuns = await albumModel.getAlbuns(name);
+        const albuns = await getAlbuns(name, country);
         res.json(albuns);
-    } catch (error) { 
-        res.status(500).json({ message: "Erro ao buscar Album." });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao buscar álbuns." });
     }
 };
 
 const getAlbum = async (req, res) => {
+    const { id } = req.params;
     try {
-        const album = await albumModel.getAlbumById(req.params.id);
+        const album = await getAlbumById(id);
         if (!album) {
-            return res.status(404).json({ message: "Album não encontrado." });
+            return res.status(404).json({ error: "Álbum não encontrado." });
         }
         res.json(album);
     } catch (error) {
-        res.status(500).json({ message: "Erro ao buscar Album." });
+        console.error(error);
+        res.status(500).json({ error: "Erro ao buscar álbum." });
     }
 };
 
 const createAlbum = async (req, res) => {
+    const { name, photo, artista_id } = req.body;
     try {
-        const { name, artista_id } = req.body;
-        const photo = req.file ? req.file.filename : null;
-        const newAlbum = await albumModel.createWizard(name, photo, artista_id);
-        res.status(201).json(newAlbum);
+        const album = await createAlbum(name, photo, artista_id);
+        res.status(201).json(album);
     } catch (error) {
-        res.status(500).json({ message: "Erro ao criar Album." });
+        console.error(error);
+        res.status(500).json({ error: "Erro ao criar álbum." });
     }
 };
 
-
 const deleteAlbum = async (req, res) => {
+    const { id } = req.params;
     try {
-        const message = await albumModel.deleteAlbum(req.params.id);
-        res.json(message);
+        const result = await deleteAlbum(id);
+        if (result.error) {
+            return res.status(404).json(result);
+        }
+        res.json(result);
     } catch (error) {
-        res.status(500).json({ message: "Erro ao deletar Album." });
+        console.error(error);
+        res.status(500).json({ error: "Erro ao deletar álbum." });
     }
 };
 
 const updateAlbum = async (req, res) => {
+    const { id } = req.params;
+    const { name, photo, artista_id } = req.body;
     try {
-        const { name, artista_id } = req.body;
-        const updateWizard = await albumModel.updateAlbum(req.params.id, name, artista_id);
-        if (!updateAlbum) {
-            return res.status(404).json({ message: "Album não encontrado." });
+        const album = await updateAlbum(id, name, photo, artista_id);
+        if (!album) {
+            return res.status(404).json({ error: "Álbum não encontrado." });
         }
-        res.json(updateAlbum);
+        res.json(album);
     } catch (error) {
-        res.status(500).json({ message: "Erro ao atualizar Album." });
+        console.error(error);
+        res.status(500).json({ error: "Erro ao atualizar álbum." });
     }
 };
 
-module.exports = { getAllalbuns, getAlbum, createAlbum, deleteAlbum, updateAlbum };
+module.exports = { getAllAlbuns, getAlbum, createAlbum, deleteAlbum, updateAlbum };

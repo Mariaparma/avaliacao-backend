@@ -1,27 +1,48 @@
 const express = require("express");
 const router = express.Router();
-const houseController = require("../controllers/artistasController.js");
-const apiKeyMiddleware = require("../config/apiKey.js");    
-
+const artistasController = require("../controllers/artistasController.js");
+const apiKeyMiddleware = require("../config/apiKey.js");
 router.use(apiKeyMiddleware);
+
 /**
  * @swagger
  * tags:
  *   name: Artistas
- *   description: Gerenciamento de Artistas 
+ *   description: Gerenciamento de Artistas
  */
 
 /**
  * @swagger
  * /api/artistas:
  *   get:
- *     summary: Lista todas os artistas
+ *     summary: Lista todos os artistas
  *     tags: [Artistas]
+ *     parameters:
+ *       - in: query
+ *         name: country
+ *         schema:
+ *           type: string
+ *         description: Filtro por país
  *     responses:
  *       200:
  *         description: Lista de artistas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   photo:
+ *                     type: string
+ *                   country:
+ *                     type: string
  */
-router.get("/artistas", artistaController.getAllArtistas);
+router.get("/artistas", artistasController.getAllArtistas);
 
 /**
  * @swagger
@@ -35,13 +56,27 @@ router.get("/artistas", artistaController.getAllArtistas);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID do artista
  *     responses:
  *       200:
  *         description: Artista encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 photo:
+ *                   type: string
+ *                 country:
+ *                   type: string
  *       404:
  *         description: Artista não encontrado
  */
-router.get("/artistas/:id", artistaController.getArtista);
+router.get("/artistas/:id", artistasController.getArtista);
 
 /**
  * @swagger
@@ -58,13 +93,15 @@ router.get("/artistas/:id", artistaController.getArtista);
  *             properties:
  *               name:
  *                 type: string
- *               founder:
+ *               photo:
+ *                 type: string
+ *               country:
  *                 type: string
  *     responses:
  *       201:
  *         description: Artista criado
  */
-router.post("/artistas", artistaController.createArtista);
+router.post("/artistas", artistasController.createArtista);
 
 /**
  * @swagger
@@ -78,17 +115,20 @@ router.post("/artistas", artistaController.createArtista);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID do artista
  *     responses:
  *       200:
  *         description: Artista deletado
+ *       404:
+ *         description: Artista não encontrado
  */
-router.delete("/artistas/:id", artistaController.deleteArtista);
+router.delete("/artistas/:id", artistasController.deleteArtista);
 
 /**
  * @swagger
  * /api/artistas/{id}:
  *   put:
- *     summary: Atualiza um Artista
+ *     summary: Atualiza um artista
  *     tags: [Artistas]
  *     parameters:
  *       - in: path
@@ -96,6 +136,7 @@ router.delete("/artistas/:id", artistaController.deleteArtista);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID do artista
  *     requestBody:
  *       required: true
  *       content:
@@ -105,12 +146,16 @@ router.delete("/artistas/:id", artistaController.deleteArtista);
  *             properties:
  *               name:
  *                 type: string
- *               founder:
+ *               photo:
+ *                 type: string
+ *               country:
  *                 type: string
  *     responses:
  *       200:
  *         description: Artista atualizado
+ *       404:
+ *         description: Artista não encontrado
  */
-router.put("/artistas/:id", artistaController.updateArtista);
+router.put("/artistas/:id", artistasController.updateArtista);
 
 module.exports = router;
