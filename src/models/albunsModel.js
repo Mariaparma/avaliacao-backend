@@ -31,10 +31,10 @@ const getAlbumById = async (id) => {
     return result.rows[0];
 };
 
-const createAlbum = async (name, artista_id, photo) => {
+const createAlbum = async (name,  photo, artista_id) => {
     const result = await pool.query(
-        "INSERT INTO albuns (name, artista_id, photo) VALUES ($1, $2, $3) RETURNING *",
-        [name, artista_id, photo]
+        "INSERT INTO albuns (name, photo, artista_id) VALUES ($1, $2, $3) RETURNING *",
+        [name, photo, artista_id]
     );
     return result.rows[0];
 };
