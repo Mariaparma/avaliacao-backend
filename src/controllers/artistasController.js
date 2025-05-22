@@ -23,9 +23,12 @@ const getArtista = async (req, res) => {
 
 const createArtista = async (req, res) => {
     try {
-        const {name, photo, country } = req.body;
-        const newCountry = await artistaModel.createArtista(name, photo, country);
-        res.status(201).json(newCountry);
+        const { name, photo, country } = req.body;
+        if (!name || !photo || !country) {
+            return res.status(400).json({ message: "Preencha todos os campos obrigatórios: name, photo, country." });
+        }
+        const newArtista = await artistaModel.createArtista(name, photo, country);
+        res.status(201).json(newArtista);
     } catch (error) {
         res.status(500).json({ message: "Erro ao criar o Artista." });
     }
@@ -33,8 +36,11 @@ const createArtista = async (req, res) => {
 
 const deleteArtista = async (req, res) => {
     try {
-        const message = await artistaModel.deleteArtista(req.params.id);
-        res.json(message);
+        const deleted = await artistaModel.deleteArtista(req.params.id);
+        if (!deleted) {
+            return res.status(404).json({ message: "Artista não encontrado." });
+        }
+        res.json({ message: "Artista deletado com sucesso." });
     } catch (error) {
         res.status(500).json({ message: "Erro ao deletar Artista." });
     }
@@ -43,11 +49,14 @@ const deleteArtista = async (req, res) => {
 const updateArtista = async (req, res) => {
     try {
         const { name, photo, country } = req.body;
-        const updateArtista = await artistaModel.updateArtista(req.params.id, name, photo, country);
-        if (!updateArtista) {
+        if (!name || !photo || !country) {
+            return res.status(400).json({ message: "Preencha todos os campos obrigatórios: name, photo, country." });
+        }
+        const updatedArtista = await artistaModel.updateArtista(req.params.id, name, photo, country);
+        if (!updatedArtista) {
             return res.status(404).json({ message: "Artista não encontrado." });
         }
-        res.json(updateArtista);
+        res.json(updatedArtista);
     } catch (error) {
         res.status(500).json({ message: "Erro ao atualizar Artista." });
     }

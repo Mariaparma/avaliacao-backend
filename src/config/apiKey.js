@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const apiKeyMiddleware = (req, res, next) => {
-    const clientKey = req.headers['.0GkT9E*5l0=_%L5/I;VN0)]KF6+YY'];
+    const clientKey = req.headers['x-api-key'];
     const serverKey = process.env.API_KEY;
 
     if (!clientKey) {

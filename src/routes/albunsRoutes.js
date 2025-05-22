@@ -3,13 +3,15 @@ const router = express.Router();
 const albumController = require("../controllers/albunsController.js");
 const upload = require("../config/upload.js");
 const apiKeyMiddleware = require("../config/apiKey.js");
+
+
 router.use(apiKeyMiddleware);
 
 /**
  * @swagger
  * tags:
  *   name: Albuns
- *   description: Gerenciamento de album
+ *   description: Gerenciamento de albuns
  */
 
 /**
@@ -18,6 +20,8 @@ router.use(apiKeyMiddleware);
  *   get:
  *     summary: Lista todos os albuns
  *     tags: [Albuns]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: query
  *         name: name
@@ -32,10 +36,12 @@ router.get("/albuns", albumController.getAllAlbuns);
 
 /**
  * @swagger
- * /api/Albuns/{id}:
+ * /api/albuns/{id}:
  *   get:
  *     summary: Busca album por ID
  *     tags: [Albuns]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -56,6 +62,8 @@ router.get("/albuns/:id", albumController.getAlbum);
  *   post:
  *     summary: Cria um novo album
  *     tags: [Albuns]
+ *     security:
+ *       - ApiKeyAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -82,6 +90,8 @@ router.post("/albuns", upload.single("photo"), albumController.createAlbum);
  *   delete:
  *     summary: Deleta um album
  *     tags: [Albuns]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -100,6 +110,8 @@ router.delete("/albuns/:id", albumController.deleteAlbum);
  *   put:
  *     summary: Atualiza um album
  *     tags: [Albuns]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -115,12 +127,12 @@ router.delete("/albuns/:id", albumController.deleteAlbum);
  *             properties:
  *               name:
  *                 type: string
- *               house_id:
+ *               artista_id:
  *                 type: integer
  *     responses:
  *       200:
  *         description: Album atualizado
  */
-router.put("/albuns/:id",albumController.updateAlbum);
+router.put("/albuns/:id", albumController.updateAlbum);
 
 module.exports = router;

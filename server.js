@@ -12,9 +12,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+
+app.use("/api", (req, res, next) => {
+    const apiKey = req.headers['x-api-key'];
+    if (!apiKey || apiKey !== process.env.API_KEY) {
+        return res.status(401).json({ error: "Chave de API não fornecida" });
+    }
+    next();
+});
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -35,7 +42,6 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
 
 app.use("/api", albumRoutes);
 app.use("/api", artistaRoutes);

@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const artistasController = require("../controllers/artistasController.js");
 const apiKeyMiddleware = require("../config/apiKey.js");
+
+
 router.use(apiKeyMiddleware);
 
 /**
@@ -17,6 +19,8 @@ router.use(apiKeyMiddleware);
  *   get:
  *     summary: Lista todos os artistas
  *     tags: [Artistas]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: query
  *         name: country
@@ -50,6 +54,8 @@ router.get("/artistas", artistasController.getAllArtistas);
  *   get:
  *     summary: Busca artista por ID
  *     tags: [Artistas]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -84,6 +90,8 @@ router.get("/artistas/:id", artistasController.getArtista);
  *   post:
  *     summary: Cria um novo artista
  *     tags: [Artistas]
+ *     security:
+ *       - ApiKeyAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -109,6 +117,8 @@ router.post("/artistas", artistasController.createArtista);
  *   delete:
  *     summary: Deleta um artista
  *     tags: [Artistas]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -130,6 +140,8 @@ router.delete("/artistas/:id", artistasController.deleteArtista);
  *   put:
  *     summary: Atualiza um artista
  *     tags: [Artistas]
+ *     security:
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id

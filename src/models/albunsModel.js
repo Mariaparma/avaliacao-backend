@@ -1,61 +1,68 @@
-const pool = require("../config/database");
+const albumModel = require("../models/albunsModel.js");
 
-const getAlbuns = async (name) => {
-   
-    if (!name) {
-    
-        const result = await pool.query(
-            `SELECT albuns.*, artistas.name AS artista_name 
-            FROM albuns
-            LEFT JOIN artistas ON albuns.artista_id = artistas.id`
-        );
-        return result.rows;
-    } else {
-        const result = await pool.query(
-            `SELECT albuns.*, artistas.name AS artista_name 
-                FROM albuns 
-                LEFT JOIN artistas ON albuns.artista_id = artistas.id
-                WHERE albuns.name ILIKE $1`, [`%${name}%`]
-        );
-        return result.rows;
+const getAllAlbuns = async (req, res) => {
+    const { name, country } = req.query;
+    try {
+        const albuns = await albumModel.getAlbuns(name, country);
+        res.json(albuns);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao buscar álbuns." });
     }
 };
 
-const getAlbumById = async (id) => {
-    const result = await pool.query(
-        `SELECT albuns.*, artistas.name AS artista_name 
-        FROM albuns
-        LEFT JOIN artistas ON albuns.artista_id = artistas.id 
-        WHERE wizards.id = $1`, [id]
-    );
-    return result.rows[0];
-};
-
-const createAlbum = async (name,  photo, artista_id) => {
-    const result = await pool.query(
-        "INSERT INTO albuns (name, photo, artista_id) VALUES ($1, $2, $3) RETURNING *",
-        [name, photo, artista_id]
-    );
-    return result.rows[0];
-};
-
-
-const deleteAlbum = async (id) => {
-    const result = await pool.query("DELETE FROM albuns WHERE id = $1 RETURNING *", [id]);
-
-    if (result.rowCount === 0) {
-        return { error: "Album não encontrado." };
+const getAlbum = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const album = await albumModel.getAlbumById(id);
+        if (!album) {
+            return res.status(404).json({ error: "Álbum não encontrado." });
+        }
+        res.json(album);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao buscar álbum." });
     }
-
-    return { message: "Album deletado com sucesso." };
 };
 
-const updateAlbum = async (id, name, photo, artista_id) => {
-    const result = await pool.query(
-        "UPDATE albuns SET name = $1, artista_id = $2 WHERE id = $3 RETURNING *",
-        [name, photo, artista_id, id]
-    );
-    return result.rows[0]
+const createAlbum = async (req, res) => {
+    const { name, photo, artista_id } = req.body;
+    try {
+        const album = await albumModel.createAlbum(name, photo, artista_id);
+        res.status(201).json(album);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao criar álbum." });
+    }
 };
 
-module.exports = { getAlbuns, getAlbumById, createAlbum, deleteAlbum, updateAlbum };
+const deleteAlbum = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await albumModel.deleteAlbum(id);
+        if (result.error) {
+            return res.status(404).json(result);
+        }
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao deletar álbum." });
+    }
+};
+
+const updateAlbum = async (req, res) => {
+    const { id } = req.params;
+    const { name, photo, artista_id } = req.body;
+    try {
+        const album = await albumModel.updateAlbum(id, name, photo, artista_id);
+        if (!album) {
+            return res.status(404).json({ error: "Álbum não encontrado." });
+        }
+        res.json(album);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao atualizar álbum." });
+    }
+};
+
+module.exports = { getAllAlbuns, getAlbum, createAlbum, deleteAlbum, updateAlbum };
